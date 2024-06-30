@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,13 +13,12 @@ public class PlayerNetwork : NetworkBehaviour
     private void Start()
     {
         if(!IsOwner)
-        {
             Destroy(GetComponent<PlayerInput>());
-            Destroy(this);
-        }
     }
     private void Update()
     {
+        if(!IsOwner) return;
+
         Move();
     }
 

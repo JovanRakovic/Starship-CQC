@@ -72,6 +72,12 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Ship",
+            "id": "36db185c-fa4f-419c-8730-515ac05713f7",
+            "actions": [],
+            "bindings": []
         }
     ],
     "controlSchemes": []
