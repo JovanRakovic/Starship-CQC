@@ -11,4 +11,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Starship_CQC/MainMenu.unity
     guid: b01db7c99bcc53c4fb61cbf91e6ce806
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: dc5426422ce007649963f2e4e0cdac70,
+      type: 2}
