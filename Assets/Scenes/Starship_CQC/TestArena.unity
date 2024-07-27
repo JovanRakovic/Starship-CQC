@@ -1036,12 +1036,17 @@ PrefabInstance:
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
       propertyPath: turnStrength
-      value: 500
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
       propertyPath: velocityLimit
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
+        type: 3}
+      propertyPath: cursorDeadzone
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
@@ -1060,8 +1065,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
+      propertyPath: mainThrusterStrength
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
+        type: 3}
       propertyPath: rotationTrustersStrength
-      value: 350
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
+        type: 3}
+      propertyPath: boogalooThrustersStrength
+      value: 750
       objectReference: {fileID: 0}
     - target: {fileID: 2698942218127095905, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}

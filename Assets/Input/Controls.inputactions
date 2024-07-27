@@ -103,6 +103,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Autopilot",
+                    "type": "Button",
+                    "id": "dfb1edc8-8bee-4c79-b007-1754452ca9b7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -226,6 +235,17 @@
                     "action": "Move2ElectricBoogaloo",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "32dcd2b6-15a6-4fa5-9370-536bac974d76",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Autopilot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
