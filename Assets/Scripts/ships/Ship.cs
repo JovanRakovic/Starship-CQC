@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
 
-public class Ship : MonoBehaviour
+public class Ship : NetworkBehaviour
 {
     [SerializeField] private bool autopilot = true;
     private bool cameraFixed = true;
@@ -28,8 +28,11 @@ public class Ship : MonoBehaviour
     [SerializeField] private float rollVelocityLimit = 2f;
     [SerializeField] private float pitchYawVelocityLimit = 1.5f;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
+        if(!IsOwner)
+            Destroy(this);
+
         shipUI = GetComponent<ShipUI>();
         shipUI.SetForwardPointerReference(transform);
         rigid = GetComponent<Rigidbody>();
@@ -38,6 +41,9 @@ public class Ship : MonoBehaviour
 
     private void Update()
     {
+        if(!IsSpawned)
+            return;
+
         if(autopilot)
             AddToThrottle(mainControls.y * Time.deltaTime);
         else
@@ -47,6 +53,9 @@ public class Ship : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(!IsSpawned)
+            return;
+        
         HandleMovement();
     }
 

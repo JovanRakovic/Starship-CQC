@@ -4,16 +4,16 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NetworkSceneManager : MonoBehaviour
+public static class NetworkSceneManager
 {
-    public void LoadSceneNetwork(string sceneName)
+    public static void LoadSceneNetwork(string sceneName)
     {
         SceneEventProgressStatus status = NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
         if(status != SceneEventProgressStatus.Started)
             Debug.LogWarning($"Failed to load {sceneName} " + $"with a {nameof(SceneEventProgressStatus)}: {status}");
     }
 
-    public void LoadScene(string sceneName)
+    public static void LoadScene(string sceneName)
     {
         LoadScene(sceneName);
     }

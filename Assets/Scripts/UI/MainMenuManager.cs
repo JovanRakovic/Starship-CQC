@@ -6,8 +6,7 @@ using System.Net;
 using TMPro;
 using System;
 using Unity.Netcode.Transports.UTP;
-using Unity.Collections;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -34,7 +33,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Transform lobbyRefresherPrefab;
     
     [SerializeField] private Transform lobbyRefresherInstance;
-
+    [SerializeField] private GameObject startSessionButton;
 
     private void Start()
     {
@@ -120,6 +119,10 @@ public class MainMenuManager : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(ipEntry.AddressList[1].ToString(), ushort.Parse(hostPortField.text));
         NetworkManager.Singleton.StartHost();
     }
+    public void StartSession()
+    {
+        NetworkSceneManager.LoadSceneNetwork("TestArena");
+    }
     public void Back()
     {
         switch(state)
@@ -132,9 +135,11 @@ public class MainMenuManager : MonoBehaviour
                 break;
             case menuState.LOBBYHOST:
                 SwitchPanels(true, menuState.HOST, lobbyPanel, hostPanel);
+                startSessionButton.SetActive(true);
                 break;
              case menuState.LOBBYCLIENT:
                 SwitchPanels(true, menuState.CONNECT, lobbyPanel, connectPanel);
+                startSessionButton.SetActive(false);
                 break;
             default:
                 NetworkManager.Singleton.Shutdown();
