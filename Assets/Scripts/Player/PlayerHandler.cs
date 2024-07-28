@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Collections;
-
+/*
+   This code was used for testing NetworkBehaviours.
+   It is te be disregarded.
+*/
 public class PlayerHandler : NetworkBehaviour
 {
    public delegate void GetName(PlayerHandler handler);

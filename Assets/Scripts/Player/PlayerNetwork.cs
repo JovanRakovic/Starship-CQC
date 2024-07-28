@@ -4,6 +4,11 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/*
+   This code was used for testing NetworkBehaviours.
+   It is te be disregarded.
+*/
+
 public class PlayerNetwork : NetworkBehaviour
 {
     private Vector2 moveInput = Vector2.zero;

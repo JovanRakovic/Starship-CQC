@@ -1018,6 +1018,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1079825589783295728, guid: 53db56527040ace4c8458c56fc10a200,
+        type: 3}
+      propertyPath: m_AngularDrag
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1418537674373303074, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
       propertyPath: m_Layer
@@ -1035,6 +1040,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 309f4d7645122254786283ded9445a55, type: 2}
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
+      propertyPath: rollStrength
+      value: 2000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
+        type: 3}
       propertyPath: turnStrength
       value: 1000
       objectReference: {fileID: 0}
@@ -1050,8 +1060,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
+      propertyPath: thrusterStrength
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
+        type: 3}
       propertyPath: cursorSensitivity
       value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
+        type: 3}
+      propertyPath: rollVelocityLimit
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
@@ -1061,12 +1081,17 @@ PrefabInstance:
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
       propertyPath: angularVelocityLimit
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}
       propertyPath: mainThrusterStrength
       value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
+        type: 3}
+      propertyPath: cursorTrustersStrength
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 2549785432152941824, guid: 53db56527040ace4c8458c56fc10a200,
         type: 3}

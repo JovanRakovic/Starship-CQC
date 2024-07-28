@@ -21,11 +21,12 @@ public class Ship : MonoBehaviour
     [SerializeField] private float throttleDeadzone = 0.08f;
     [SerializeField] private float thrusterStrength = 1000f;
     [SerializeField] private float rollStrength = 1000f;
-    [SerializeField] private float rotationTrustersStrength = 1000f;
+    [SerializeField] private float cursorTrustersStrength = 1000f;
     [SerializeField] private float cursorSensitivity = 1f;
     [SerializeField] private float cursorDeadzone = .1f;
     [SerializeField] private float velocityLimit = 10f;
-    [SerializeField] private float angularVelocityLimit = 10f;
+    [SerializeField] private float rollVelocityLimit = 2f;
+    [SerializeField] private float pitchYawVelocityLimit = 1.5f;
 
     void Start()
     {
@@ -62,29 +63,34 @@ public class Ship : MonoBehaviour
 
         Vector3 targetRoll = transform.forward * -mainControls.x;
         Vector3 forwardProjection = Vector3.Project(rigid.angularVelocity, transform.forward);
-        targetRoll = autopilot? Vector3.ClampMagnitude(targetRoll * angularVelocityLimit - forwardProjection, 1) : targetRoll.normalized;
 
-        rigid.AddForce(targetDirection * (thrusterStrength * standardMultiplication), ForceMode.Force);
-        rigid.AddTorque(targetRoll * (rollStrength * standardMultiplication), ForceMode.Force);
+        targetRoll = autopilot? Vector3.ClampMagnitude(targetRoll * rollVelocityLimit - forwardProjection, 1) : targetRoll;
 
-        Vector3 tourqeDirection = Vector3.zero;
+        Vector3 targetPitchYaw = Vector3.zero;
         if(cursorManuver.magnitude > cursorDeadzone)
         {
-            tourqeDirection = transform.right * -cursorManuver.y + transform.up * cursorManuver.x;
-            tourqeDirection = (tourqeDirection - tourqeDirection.normalized * cursorDeadzone) / (1f - cursorDeadzone);
+            targetPitchYaw = transform.right * -cursorManuver.y + transform.up * cursorManuver.x;
+            targetPitchYaw = (targetPitchYaw - targetPitchYaw.normalized * cursorDeadzone) / (1f - cursorDeadzone);
         }
 
         if(autopilot)
-            tourqeDirection = Vector3.ClampMagnitude(tourqeDirection * angularVelocityLimit - rigid.angularVelocity - forwardProjection, 1);
+            targetPitchYaw = Vector3.ClampMagnitude(targetPitchYaw * pitchYawVelocityLimit - rigid.angularVelocity + forwardProjection, 1);
             
-        rigid.AddTorque(tourqeDirection * (rotationTrustersStrength * standardMultiplication), ForceMode.Force);
+        //Applying the forces
+        rigid.AddForce(targetDirection * (thrusterStrength * standardMultiplication), ForceMode.Force);
+        rigid.AddTorque(targetRoll * (rollStrength * standardMultiplication), ForceMode.Force);
+        rigid.AddTorque(targetPitchYaw * (cursorTrustersStrength * standardMultiplication), ForceMode.Force);
 
         //Speed Limiting
+        Vector3 angularVelocityForwardProjection = Vector3.Project(rigid.angularVelocity, transform.forward);
+        Vector3 angularVelocityWithoutRoll = rigid.angularVelocity -  angularVelocityForwardProjection;
         if(rigid.velocity.magnitude > velocityLimit)
             //I put a two in the equation as the player could "stall" the speed limit if they somehow got passed it in the first place
             rigid.AddForce(-rigid.velocity.normalized * (thrusterStrength * 2 * standardMultiplication), ForceMode.Force);
-        if(rigid.angularVelocity.magnitude > angularVelocityLimit)
-            rigid.AddTorque(-rigid.angularVelocity.normalized * (standardMultiplication * rollStrength), ForceMode.Force);
+        if(angularVelocityForwardProjection.magnitude > rollVelocityLimit)
+            rigid.AddTorque(-angularVelocityForwardProjection.normalized * (standardMultiplication * rollStrength), ForceMode.Force);
+        if(angularVelocityWithoutRoll.magnitude > pitchYawVelocityLimit)
+            rigid.AddTorque(-angularVelocityWithoutRoll.normalized * (standardMultiplication * cursorTrustersStrength), ForceMode.Force);
     }
 
     private void AddToThrottle(float add)
