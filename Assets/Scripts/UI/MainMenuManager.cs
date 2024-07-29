@@ -6,7 +6,6 @@ using System.Net;
 using TMPro;
 using System;
 using Unity.Netcode.Transports.UTP;
-using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -34,6 +33,7 @@ public class MainMenuManager : MonoBehaviour
     
     [SerializeField] private Transform lobbyRefresherInstance;
     [SerializeField] private GameObject startSessionButton;
+    [SerializeField] private Transform[] shipPrefabs;
 
     private void Start()
     {
@@ -103,6 +103,8 @@ public class MainMenuManager : MonoBehaviour
         NetworkManager.Singleton.StartClient();
 
         SwitchPanels(false, menuState.LOBBYCLIENT, connectPanel, lobbyPanel);
+
+        CustomPlayerData.shipId = 0;
     }
     public void ToHostMenu()
     {
@@ -118,6 +120,8 @@ public class MainMenuManager : MonoBehaviour
 
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(ipEntry.AddressList[1].ToString(), ushort.Parse(hostPortField.text));
         NetworkManager.Singleton.StartHost();
+
+        CustomPlayerData.shipId = 0;
     }
     public void StartSession()
     {
@@ -164,5 +168,13 @@ public class MainMenuManager : MonoBehaviour
         group.alpha = (toggle)? 1 : 0;
         group.blocksRaycasts = toggle;
         group.interactable = toggle;
+    }
+
+    private void OnDestroy() 
+    {
+        NetworkManager.Singleton.OnClientConnectedCallback -= UpdateList;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= UpdateList;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= BackOnServerShutdown;
+        StopAllCoroutines();    
     }
 }

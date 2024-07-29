@@ -1,11 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShipUI : MonoBehaviour
+public class ShipUI : NetworkBehaviour
 {
+    [SerializeField] private Transform canvas; 
     [SerializeField] private RectTransform forwardPointer;
     private Transform forwardPointerTransform;
     private RectTransform manuverPointer;
@@ -16,12 +16,39 @@ public class ShipUI : MonoBehaviour
     [SerializeField] private float manuverPointerExtent = 5;
     [SerializeField] private Renderer throttleIndicator;
     private Material throttleMat;
+    [SerializeField] private Camera overlayCam;
+    [SerializeField] private RawImage overlayImage;
+
+    private int lastScreenWidth, lastScreenHeight;
 
     void Start()
     {
+        if(!IsOwner)
+        {
+            Destroy(canvas.gameObject);
+            Destroy(this);
+        }
+
+        ResizeOverlayTexture();
+        canvas.SetParent(null);
+
         manuverPointer = forwardPointer.GetChild(0).GetComponent<RectTransform>();
         manuverPointerImage = manuverPointer.GetComponent<Image>();
         throttleMat = throttleIndicator.material;
+    }
+
+    private void ResizeOverlayTexture()
+    {
+        if(overlayCam.targetTexture != null)
+            overlayCam.targetTexture.Release();
+
+        lastScreenWidth = Screen.width;
+        lastScreenHeight = Screen.height;
+        
+        RenderTexture t = new RenderTexture(lastScreenWidth, lastScreenHeight, 16, RenderTextureFormat.ARGB32);
+        t.Create();
+        overlayCam.targetTexture = t;
+        overlayImage.texture = t;
     }
 
     void Update()
@@ -29,6 +56,9 @@ public class ShipUI : MonoBehaviour
         Vector3 temp = mainCamera.WorldToScreenPoint(forwardPointerTransform.position + forwardPointerTransform.forward * 5000);
         temp.z = 0;
         forwardPointer.position = temp;
+
+        if(lastScreenHeight != Screen.height || lastScreenWidth != Screen.width)
+            ResizeOverlayTexture();
     }
 
     public void SetForwardPointerReference(Transform reference) { forwardPointerTransform = reference; }
@@ -43,6 +73,7 @@ public class ShipUI : MonoBehaviour
 
     public void UpdateThrottle(float throttle)
     {
-        throttleMat.SetFloat("_cutoff", throttle*.5f);
+        if(throttleMat != null)
+            throttleMat.SetFloat("_cutoff", throttle*.5f);
     }
 }

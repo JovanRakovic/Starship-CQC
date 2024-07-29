@@ -6,6 +6,7 @@ using Unity.Netcode;
 
 public class Ship : NetworkBehaviour
 {
+    [SerializeField] private Transform cam;
     [SerializeField] private bool autopilot = true;
     private bool cameraFixed = true;
     [SerializeField] private Renderer outsideCockipGlass;
@@ -31,8 +32,11 @@ public class Ship : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if(!IsOwner)
+        {
+            Destroy(cam.gameObject);
             Destroy(this);
-
+            outsideCockipGlass.enabled = true;
+        }
         shipUI = GetComponent<ShipUI>();
         shipUI.SetForwardPointerReference(transform);
         rigid = GetComponent<Rigidbody>();
@@ -49,6 +53,8 @@ public class Ship : NetworkBehaviour
         else
             throttle = mainControls.y;
         shipUI.UpdateThrottle(throttle);
+
+        HandleMovement();
     }
 
     void FixedUpdate()
@@ -56,13 +62,13 @@ public class Ship : NetworkBehaviour
         if(!IsSpawned)
             return;
         
-        HandleMovement();
+        //HandleMovement();
     }
 
     private void HandleMovement()
     {
         //A lot of things are multiplied by these two, so thought I should save a bit of computing power by storing them in a variable
-        float standardMultiplication = rigid.mass * Time.fixedDeltaTime;
+        float standardMultiplication = rigid.mass * Time.deltaTime;
 
         float deadzonedThrottle = 0;
         if(Mathf.Abs(throttle) > throttleDeadzone) 
