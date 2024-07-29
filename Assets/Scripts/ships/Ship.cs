@@ -53,8 +53,6 @@ public class Ship : NetworkBehaviour
         else
             throttle = mainControls.y;
         shipUI.UpdateThrottle(throttle);
-
-        HandleMovement();
     }
 
     void FixedUpdate()
@@ -62,13 +60,13 @@ public class Ship : NetworkBehaviour
         if(!IsSpawned)
             return;
         
-        //HandleMovement();
+        HandleMovement();
     }
 
     private void HandleMovement()
     {
         //A lot of things are multiplied by these two, so thought I should save a bit of computing power by storing them in a variable
-        float standardMultiplication = rigid.mass * Time.deltaTime;
+        float standardMultiplication = rigid.mass * Time.fixedDeltaTime;
 
         float deadzonedThrottle = 0;
         if(Mathf.Abs(throttle) > throttleDeadzone) 
