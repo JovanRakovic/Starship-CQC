@@ -6,7 +6,7 @@ using Unity.Netcode;
 
 public class Ship : NetworkBehaviour
 {
-    [SerializeField] private Transform cam;
+    [SerializeField] private GameObject cam;
     [SerializeField] private bool autopilot = true;
     private bool cameraFixed = true;
     [SerializeField] private Renderer outsideCockipGlass;
@@ -31,11 +31,18 @@ public class Ship : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        /*if(IsServer)
+        {
+            rigid = GetComponent<Rigidbody>();
+            return;
+        }*/
+
         if(!IsOwner)
         {
-            Destroy(cam.gameObject);
-            Destroy(this);
+            Destroy(GetComponent<PlayerInput>());
+            Destroy(cam);
             outsideCockipGlass.enabled = true;
+            Destroy(this);
         }
         shipUI = GetComponent<ShipUI>();
         shipUI.SetForwardPointerReference(transform);
@@ -45,7 +52,7 @@ public class Ship : NetworkBehaviour
 
     private void Update()
     {
-        if(!IsSpawned)
+        if(!IsSpawned/* && !IsServer*/)
             return;
 
         if(autopilot)
@@ -57,13 +64,14 @@ public class Ship : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if(!IsSpawned)
+        if(!IsSpawned/* && IsServer*/)
             return;
         
-        HandleMovement();
+        HandleMovementRpc();
     }
 
-    private void HandleMovement()
+    //[Rpc(SendTo.Server)]
+    private void HandleMovementRpc()
     {
         //A lot of things are multiplied by these two, so thought I should save a bit of computing power by storing them in a variable
         float standardMultiplication = rigid.mass * Time.fixedDeltaTime;

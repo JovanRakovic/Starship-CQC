@@ -700,7 +700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3962088229
+  GlobalObjectIdHash: 1060315434
   InScenePlacedSourceGlobalObjectIdHash: 1060315434
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -721,7 +721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba9bb57623a579468a51ad2f4651f47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 2846346596296221418}
+  cam: {fileID: 6476336955932897510}
   autopilot: 1
   outsideCockipGlass: {fileID: 7863368034387243745}
   throttle: 0
@@ -836,8 +836,8 @@ MonoBehaviour:
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
-  UseQuaternionSynchronization: 1
-  UseQuaternionCompression: 1
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
   Interpolate: 1
