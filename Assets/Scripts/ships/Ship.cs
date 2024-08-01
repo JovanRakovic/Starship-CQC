@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
@@ -31,19 +29,14 @@ public class Ship : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        /*if(IsServer)
-        {
-            rigid = GetComponent<Rigidbody>();
-            return;
-        }*/
-
         if(!IsOwner)
         {
             Destroy(GetComponent<PlayerInput>());
             Destroy(cam);
             outsideCockipGlass.enabled = true;
-            Destroy(this);
+            return;
         }
+
         shipUI = GetComponent<ShipUI>();
         shipUI.SetForwardPointerReference(transform);
         rigid = GetComponent<Rigidbody>();
@@ -52,7 +45,7 @@ public class Ship : NetworkBehaviour
 
     private void Update()
     {
-        if(!IsSpawned/* && !IsServer*/)
+        if(!IsSpawned || !IsOwner)
             return;
 
         if(autopilot)
@@ -64,14 +57,13 @@ public class Ship : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if(!IsSpawned/* && IsServer*/)
+        if(!IsSpawned || !IsOwner)
             return;
         
-        HandleMovementRpc();
+        HandleMovement();
     }
 
-    //[Rpc(SendTo.Server)]
-    private void HandleMovementRpc()
+    private void HandleMovement()
     {
         //A lot of things are multiplied by these two, so thought I should save a bit of computing power by storing them in a variable
         float standardMultiplication = rigid.mass * Time.fixedDeltaTime;

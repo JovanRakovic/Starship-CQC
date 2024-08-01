@@ -21,12 +21,13 @@ public class ShipUI : NetworkBehaviour
 
     private int lastScreenWidth, lastScreenHeight;
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
         if(!IsOwner)
         {
             Destroy(canvas.gameObject);
             Destroy(this);
+            return;
         }
 
         ResizeOverlayTexture();
@@ -53,6 +54,9 @@ public class ShipUI : NetworkBehaviour
 
     void Update()
     {
+        if(!IsSpawned)
+            return;
+
         Vector3 temp = mainCamera.WorldToScreenPoint(forwardPointerTransform.position + forwardPointerTransform.forward * 5000);
         temp.z = 0;
         forwardPointer.position = temp;
