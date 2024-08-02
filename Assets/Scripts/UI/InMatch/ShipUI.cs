@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 public class ShipUI : NetworkBehaviour
 {
-    [SerializeField] private Transform canvas; 
-    [SerializeField] private RectTransform forwardPointer;
-    private Transform forwardPointerTransform;
+    private RectTransform forwardPointer;
+    private Transform forwardPointerTarget;
     private RectTransform manuverPointer;
     private Image manuverPointerImage;
     //For some reason I have to manually assign the camera instead of being able to assign it with Camera.main
@@ -17,7 +16,8 @@ public class ShipUI : NetworkBehaviour
     [SerializeField] private Renderer throttleIndicator;
     private Material throttleMat;
     [SerializeField] private Camera overlayCam;
-    [SerializeField] private RawImage overlayImage;
+    private RawImage overlayImage;
+    private ShipHUD hudInfo;
 
     private int lastScreenWidth, lastScreenHeight;
 
@@ -25,13 +25,15 @@ public class ShipUI : NetworkBehaviour
     {
         if(!IsOwner)
         {
-            Destroy(canvas.gameObject);
             Destroy(this);
             return;
         }
 
+        hudInfo = GameObject.FindObjectOfType<ShipHUD>();
+        overlayImage = hudInfo.overlayImage;
+        forwardPointer = hudInfo.forwardPointer;
+
         ResizeOverlayTexture();
-        canvas.SetParent(null);
 
         manuverPointer = forwardPointer.GetChild(0).GetComponent<RectTransform>();
         manuverPointerImage = manuverPointer.GetComponent<Image>();
@@ -57,7 +59,7 @@ public class ShipUI : NetworkBehaviour
         if(!IsSpawned)
             return;
 
-        Vector3 temp = mainCamera.WorldToScreenPoint(forwardPointerTransform.position + forwardPointerTransform.forward * 5000);
+        Vector3 temp = mainCamera.WorldToScreenPoint(forwardPointerTarget.position + forwardPointerTarget.forward * 5000);
         temp.z = 0;
         forwardPointer.position = temp;
 
@@ -65,7 +67,7 @@ public class ShipUI : NetworkBehaviour
             ResizeOverlayTexture();
     }
 
-    public void SetForwardPointerReference(Transform reference) { forwardPointerTransform = reference; }
+    public void SetForwardPointerTarget(Transform reference) { forwardPointerTarget = reference; }
     public void SetManuverPointerPosition(Vector2 position)
     {
         manuverPointer.localPosition = manuverPointerExtent * position;

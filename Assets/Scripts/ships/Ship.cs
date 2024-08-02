@@ -18,7 +18,8 @@ public class Ship : NetworkBehaviour
     private Vector2 cursorManuver = Vector2.zero;
     [SerializeField] private float throttle = 0f;
     [SerializeField] private float throttleDeadzone = 0.08f;
-    [SerializeField] private float thrusterStrength = 1000f;
+    [SerializeField] private float forwardThrusterStrength = 1000f;
+    [SerializeField] private float boogalooThrusterStrength = 1000f;
     [SerializeField] private float rollStrength = 1000f;
     [SerializeField] private float cursorTrustersStrength = 1000f;
     [SerializeField] private float cursorSensitivity = 1f;
@@ -38,7 +39,7 @@ public class Ship : NetworkBehaviour
         }
 
         shipUI = GetComponent<ShipUI>();
-        shipUI.SetForwardPointerReference(transform);
+        shipUI.SetForwardPointerTarget(transform);
         rigid = GetComponent<Rigidbody>();
         outsideCockipGlass.enabled = false;
     }
@@ -71,8 +72,8 @@ public class Ship : NetworkBehaviour
         float deadzonedThrottle = 0;
         if(Mathf.Abs(throttle) > throttleDeadzone) 
             deadzonedThrottle = (throttle + ((throttle > 0)? -throttleDeadzone : throttleDeadzone)) / (1f - throttleDeadzone);
-        Vector3 targetDirection = transform.forward * deadzonedThrottle + transform.right * boogalooControls.x + transform.up * boogalooControls.y;
-        targetDirection = autopilot? Vector3.ClampMagnitude(targetDirection * velocityLimit - rigid.velocity, 1) : targetDirection.normalized;
+        Vector3 forwardThrust = transform.forward * deadzonedThrottle + (transform.right * boogalooControls.x + transform.up * boogalooControls.y) * (boogalooThrusterStrength / forwardThrusterStrength);
+        forwardThrust = autopilot? Vector3.ClampMagnitude(forwardThrust * velocityLimit - rigid.velocity, 1) : forwardThrust.normalized;
 
         Vector3 targetRoll = transform.forward * -mainControls.x;
         Vector3 forwardProjection = Vector3.Project(rigid.angularVelocity, transform.forward);
@@ -90,16 +91,17 @@ public class Ship : NetworkBehaviour
             targetPitchYaw = Vector3.ClampMagnitude(targetPitchYaw * pitchYawVelocityLimit - rigid.angularVelocity + forwardProjection, 1);
             
         //Applying the forces
-        rigid.AddForce(targetDirection * (thrusterStrength * standardMultiplication), ForceMode.Force);
-        rigid.AddTorque(targetRoll * (rollStrength * standardMultiplication), ForceMode.Force);
-        rigid.AddTorque(targetPitchYaw * (cursorTrustersStrength * standardMultiplication), ForceMode.Force);
+        targetPitchYaw *= cursorTrustersStrength / rollStrength;
+        rigid.AddForce(forwardThrust * (forwardThrusterStrength * standardMultiplication), ForceMode.Force);
+        rigid.AddTorque((targetRoll + targetPitchYaw) * (rollStrength * standardMultiplication), ForceMode.Force);
 
         //Speed Limiting
         Vector3 angularVelocityForwardProjection = Vector3.Project(rigid.angularVelocity, transform.forward);
         Vector3 angularVelocityWithoutRoll = rigid.angularVelocity -  angularVelocityForwardProjection;
+        //I put a two in the equation as the player could "stall" the speed limit if they somehow got passed it in the first place
+        standardMultiplication *= 2;
         if(rigid.velocity.magnitude > velocityLimit)
-            //I put a two in the equation as the player could "stall" the speed limit if they somehow got passed it in the first place
-            rigid.AddForce(-rigid.velocity.normalized * (thrusterStrength * 2 * standardMultiplication), ForceMode.Force);
+            rigid.AddForce(-rigid.velocity.normalized * (forwardThrusterStrength * standardMultiplication), ForceMode.Force);
         if(angularVelocityForwardProjection.magnitude > rollVelocityLimit)
             rigid.AddTorque(-angularVelocityForwardProjection.normalized * (standardMultiplication * rollStrength), ForceMode.Force);
         if(angularVelocityWithoutRoll.magnitude > pitchYawVelocityLimit)
