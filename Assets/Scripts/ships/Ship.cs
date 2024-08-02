@@ -4,7 +4,9 @@ using Unity.Netcode;
 
 public class Ship : NetworkBehaviour
 {
-    [SerializeField] private GameObject cam;
+    public delegate void CameraSetup(Transform camParent);
+    public static CameraSetup cameraSetup;
+
     [SerializeField] private bool autopilot = true;
     private bool cameraFixed = true;
     [SerializeField] private Renderer outsideCockipGlass;
@@ -27,16 +29,18 @@ public class Ship : NetworkBehaviour
     [SerializeField] private float velocityLimit = 10f;
     [SerializeField] private float rollVelocityLimit = 2f;
     [SerializeField] private float pitchYawVelocityLimit = 1.5f;
+    [SerializeField] private Transform camParent;
 
     public override void OnNetworkSpawn()
     {
         if(!IsOwner)
         {
             Destroy(GetComponent<PlayerInput>());
-            Destroy(cam);
             outsideCockipGlass.enabled = true;
             return;
         }
+
+        cameraSetup?.Invoke(camParent);
 
         shipUI = GetComponent<ShipUI>();
         shipUI.SetForwardPointerTarget(transform);

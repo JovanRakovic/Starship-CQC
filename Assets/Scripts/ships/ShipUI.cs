@@ -11,15 +11,17 @@ public class ShipUI : NetworkBehaviour
     private Image manuverPointerImage;
     //For some reason I have to manually assign the camera instead of being able to assign it with Camera.main
     //I suspect that might be due to there being two cameras in the scene
-    [SerializeField] Camera mainCamera;
+    Camera mainCamera;
     [SerializeField] private float manuverPointerExtent = 5;
     [SerializeField] private Renderer throttleIndicator;
     private Material throttleMat;
-    [SerializeField] private Camera overlayCam;
+    private Camera overlayCam;
     private RawImage overlayImage;
     private ShipHUD hudInfo;
 
     private int lastScreenWidth, lastScreenHeight;
+
+    private void Awake(){ ShipCam.sendCams += (Camera camMain, Camera camOverlay) => { mainCamera = camMain; overlayCam = camOverlay; };}
 
     public override void OnNetworkSpawn()
     {
