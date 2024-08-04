@@ -37,10 +37,10 @@ public class MainMenuManager : MonoBehaviour
 
     private void Start()
     {
-        ToggleCanvasGroup(mainMenuPanel, true);
-        ToggleCanvasGroup(connectPanel, false);
-        ToggleCanvasGroup(hostPanel, false);
-        ToggleCanvasGroup(lobbyPanel, false);
+        UITools.ToggleCanvasGroup(mainMenuPanel, true);
+        UITools.ToggleCanvasGroup(connectPanel, false);
+        UITools.ToggleCanvasGroup(hostPanel, false);
+        UITools.ToggleCanvasGroup(lobbyPanel, false);
 
         PlayerHandler.getName += (PlayerHandler handler) => {
             handler.SetUsername(usernameField.text);
@@ -148,10 +148,10 @@ public class MainMenuManager : MonoBehaviour
             default:
                 NetworkManager.Singleton.Shutdown();
                 state = menuState.MAIN;
-                ToggleCanvasGroup(mainMenuPanel, true);
-                ToggleCanvasGroup(connectPanel, false);
-                ToggleCanvasGroup(hostPanel, false);
-                ToggleCanvasGroup(lobbyPanel, false);
+                UITools.ToggleCanvasGroup(mainMenuPanel, true);
+                UITools.ToggleCanvasGroup(connectPanel, false);
+                UITools.ToggleCanvasGroup(hostPanel, false);
+                UITools.ToggleCanvasGroup(lobbyPanel, false);
                 break;
         }
     }
@@ -160,14 +160,8 @@ public class MainMenuManager : MonoBehaviour
     {
         state = newState;
         if(shutdown) NetworkManager.Singleton.Shutdown();
-        ToggleCanvasGroup(to, true);
-        ToggleCanvasGroup(from, false);
-    }
-    private void ToggleCanvasGroup(CanvasGroup group, bool toggle)
-    {
-        group.alpha = (toggle)? 1 : 0;
-        group.blocksRaycasts = toggle;
-        group.interactable = toggle;
+        UITools.ToggleCanvasGroup(to, true);
+        UITools.ToggleCanvasGroup(from, false);
     }
 
     private void OnDestroy() 
